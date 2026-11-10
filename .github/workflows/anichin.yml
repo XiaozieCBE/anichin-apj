@@ -1,0 +1,26 @@
+name: anichin
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */3 * * *"
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: node anichin.js --home > home.json
+      - run: |
+          git config user.name bot
+          git config user.email bot@local
+          git add home.json
+          git commit -m "update" || true
+          git push
